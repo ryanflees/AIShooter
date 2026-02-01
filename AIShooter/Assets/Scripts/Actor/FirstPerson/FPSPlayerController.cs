@@ -36,15 +36,19 @@ namespace CR
         private bool m_AllowSprint = true;
         private bool m_AllowSlide = true;
         private bool m_SprintPressed;
-        
+
         private float m_SprintLockMaxTime = 0.07f;
         private float m_SprintLockTimer = 0f;
-        
+
         private float m_JustLandTimer = 0f;
         private float m_JustLandMax = 0.1f;
         private float m_SlidingCDTimer = 0f;
         private float m_SlidingCD = 1f;
         private float m_InAirTimer = 0f;
+        #endregion
+
+        #region Bobbing
+        private BobbingCurve m_BobbingCurve = new BobbingCurve();
         #endregion
 
         #region Fall Check
@@ -54,6 +58,7 @@ namespace CR
         public float m_FallDamageMaxDistance = 15f;
         #endregion
 
+        
         private void Awake()
         {
             Init();
@@ -104,13 +109,17 @@ namespace CR
             float dt = Time.deltaTime;
 
             UpdateTimers(dt);
-            
+
             if (IsAlive())
             {
                 m_CameraController.ManualUpdate(dt);
-            
+
                 //todo check is ~ console is open, if not then input is allowed
                 HandleInput(dt);
+
+                UpdateStatus(dt);
+                
+                DebugGraph.Log(m_PlayerStatus.m_BuiltinCurveAngle);
             }
         }
 
@@ -778,5 +787,60 @@ namespace CR
 
         #endregion
 
+        #region Status
+
+        private void UpdateStatus(float dt)
+        {;
+            if (m_PlayerStatus != null)
+            {
+                m_PlayerStatus.m_IsAlive = IsAlive();
+                m_PlayerStatus.m_CharacterRunSpeedNormalized = m_KinematicController.CurrentRunSpeedNormalized;
+                m_PlayerStatus.m_CharacterRunSpeedNormalized = Mathf.Min(1f, m_PlayerStatus.m_CharacterRunSpeedNormalized);
+
+                m_PlayerStatus.m_CharacterSprintSpeedNormalized = m_KinematicController.CurrentRunSpeedNormalized;
+
+                m_PlayerStatus.m_CharacterCrouchSpeedNormalized = m_KinematicController.CurrentCrouchSpeedNormalized;
+                m_PlayerStatus.m_CharacterCrouchSpeedNormalized =
+                    Mathf.Min(1f, m_PlayerStatus.m_CharacterCrouchSpeedNormalized);
+
+                Vector3 velocity = m_KinematicController.Motor.BaseVelocity;
+                Vector3 localVelocity = m_CameraPitchTrans.InverseTransformDirection(velocity);
+                m_PlayerStatus.m_StrafeSpeedNormalized = localVelocity.x / m_KinematicController.m_RunSpeed;
+                bool wasOnGround = m_PlayerStatus.m_IsOnGround;
+                m_PlayerStatus.m_IsOnGround = m_KinematicController.IsOnGround();
+                m_PlayerStatus.m_IsSliding = m_KinematicController.IsSliding();
+
+                m_PlayerStatus.m_Crouch = m_KinematicController.IsCrouched();
+
+                m_PlayerStatus.m_IsSprinting = m_KinematicController.IsSprinting();
+                if (m_PlayerStatus.m_IsSprinting)
+                {
+                    m_SprintLockTimer = m_SprintLockMaxTime;
+                }
+                else
+                {
+                    m_SprintLockTimer -= dt;
+                }
+                m_PlayerStatus.m_SprintAttackLocked = m_SprintLockTimer > 0f;
+                // FirstPersonWeaponMecanim currentWeapon = m_WeaponController.CurrentWeapon;
+                // if (currentWeapon != null)
+                // {
+                //     m_PlayerStatus.m_IsADSMode = currentWeapon.IsADSMode();
+                //     m_PlayerStatus.m_ADSValue = currentWeapon.GetADSValue();
+                //     m_PlayerStatus.m_IsADSModeTurningOff = currentWeapon.IsADSModeTurningOff();
+                // }
+                // else
+                {
+                    m_PlayerStatus.m_IsADSMode = false;
+                    m_PlayerStatus.m_ADSValue = 0f;
+                    m_PlayerStatus.m_IsADSModeTurningOff = false;
+                }
+
+                m_BobbingCurve.UpdateCurve(dt, m_PlayerStatus);
+                m_PlayerStatus.m_BuiltinCurveAngle = m_BobbingCurve.BuiltinCurveAngle;
+            }
+        }
+
+        #endregion
     }
 }

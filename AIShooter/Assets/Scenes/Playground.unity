@@ -3117,12 +3117,12 @@ MonoBehaviour:
   m_Sliding: 0
   m_CamSlidingZOffset: 0.3
   m_CamCurrentBaseHeight: 1.5
-  m_RunPositionBob: {x: 0, y: 0, z: 0}
+  m_RunPositionBob: {x: 2, y: 15, z: 0}
   m_RunPositionBobCrouchMultiplier: 0.8
   m_RunPositionBobADSMultiplier: 0.5
   m_RunCameraBobYFreq: 2
-  m_SprintPositionBob: {x: 0, y: 0, z: 0}
-  m_SprintEulerBob: {x: 0, y: 0, z: 0}
+  m_SprintPositionBob: {x: 0, y: -30, z: 0}
+  m_SprintEulerBob: {x: 1, y: 0, z: 0}
   m_DefaultShakeAmplitude: {x: 0.2, y: 0.5, z: 0.5}
   m_DefaultShakeFrequency: {x: 20, y: 24.5, z: 28}
   m_DefaultFov: 75

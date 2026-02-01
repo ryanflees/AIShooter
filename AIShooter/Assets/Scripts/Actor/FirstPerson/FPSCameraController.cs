@@ -154,6 +154,7 @@ namespace CR
 		private float m_LerpStrength = 1f;
 
 		#endregion
+		
 
 		void Awake()
 		{
@@ -580,6 +581,7 @@ namespace CR
 			if (playerStatus != null && playerStatus.m_IsOnGround)
 			{
 				float curveAngle = playerStatus.m_BuiltinCurveAngle;
+				DebugGraph.Log(curveAngle);
 				if (playerStatus.m_CharacterRunSpeedNormalized > 0.01f)
 				{
 					if (playerStatus.m_Crouch)
@@ -643,6 +645,7 @@ namespace CR
 			{
 				m_CameraYawBobbingAmount = Vector3.Lerp(m_CameraYawBobbingAmount, Vector3.zero, dt * 3);
 			}
+			DebugGraph.Log(m_CameraYawBobbingAmount);
 			m_CameraYawTrans.localPosition = m_CameraYawBobbingAmount;
 			m_CameraYawBobbingAngle.y = m_CameraYawTrans.localEulerAngles.y;
 			m_CameraYawTrans.localRotation = Quaternion.Euler(m_CameraYawBobbingAngle);
