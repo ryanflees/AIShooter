@@ -1,5 +1,3 @@
-#if ES3_UGUI
-
 using System;
 using UnityEngine;
 
@@ -11,7 +9,7 @@ namespace ES3Types
 	{
 		public static ES3Type Instance = null;
 
-		public ES3Type_RawImage() : base(typeof(UnityEngine.UI.RawImage)){ Instance = this;}
+		public ES3Type_RawImage() : base(typeof(UnityEngine.UI.RawImage)){ Instance = this; priority = 1;}
 
 
 		protected override void WriteComponent(object obj, ES3Writer writer)
@@ -96,5 +94,3 @@ namespace ES3Types
 		}
 	}
 }
-
-#endif

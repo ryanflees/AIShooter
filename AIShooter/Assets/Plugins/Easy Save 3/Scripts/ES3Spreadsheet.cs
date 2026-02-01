@@ -20,7 +20,7 @@ public class ES3Spreadsheet
 	private const char COMMA_CHAR = ',';
 	private const char NEWLINE_CHAR = '\n';
 	private const string ESCAPED_QUOTE = "\"\"";
-	private static char[] CHARS_TO_ESCAPE = { ',', '"', '\n'};
+	private static char[] CHARS_TO_ESCAPE = { ',', '"', '\n', ' ' };
 
 	public int ColumnCount
 	{
@@ -32,52 +32,18 @@ public class ES3Spreadsheet
 		get{ return rows; }
 	}
 
-    public int GetColumnLength(int col)
-    {
-        if (col >= cols)
-            return 0;
-
-        int maxRow = -1;
-
-        foreach(var index in cells.Keys)
-            if (index.col == col && index.row > maxRow)
-                maxRow = index.row;
-
-        return maxRow+1;
-    }
-
-    public int GetRowLength(int row)
-    {
-        if (row >= rows)
-            return 0;
-
-        int maxCol = -1;
-
-        foreach (var index in cells.Keys)
-            if (index.row == row && index.col > maxCol)
-                maxCol = index.col;
-
-        return maxCol + 1;
-    }
-
     public void SetCell(int col, int row, object value)
     {
-		if(value == null)
-		{
-            SetCellString(col, row, null);
-			return;
-        }
-
         var type = value.GetType();
 
-		// If we're writing a string, add it without formatting.
-		if (type == typeof(string))
-		{
-			SetCellString(col, row, (string)value);
-			return;
-		}
+        // If we're writing a string, add it without formatting.
+        if (type == typeof(string))
+        {
+            SetCellString(col, row, (string)value);
+            return;
+        }
 
-        var settings = new ES3Settings(ES3.Location.File);
+        var settings = new ES3Settings();
         if (ES3Reflection.IsPrimitive(type))
             SetCellString(col, row, value.ToString());
         else
@@ -109,7 +75,6 @@ public class ES3Spreadsheet
 
         if (val == null)
             return default(T);
-
         return (T)val;
 	}
 
@@ -130,7 +95,7 @@ public class ES3Spreadsheet
             return str;
         }
 
-        var settings = new ES3Settings(ES3.Location.File);
+        var settings = new ES3Settings();
         return ES3.Deserialize(ES3TypeMgr.GetOrCreateES3Type(type, true), settings.encoding.GetBytes(value), settings);
     }
 
@@ -146,19 +111,12 @@ public class ES3Spreadsheet
 
 	public void Load(ES3Settings settings)
 	{
-        // Spreadsheets can't be read from cache, so read from file instead.
-        if (settings.location == ES3.Location.Cache)
-        {
-            settings = (ES3Settings)settings.Clone();
-            settings.location = ES3.Location.File;
-        }
-
-        Load(ES3Stream.CreateStream(settings, ES3FileMode.Read), settings);
+		Load(ES3Stream.CreateStream(settings, ES3FileMode.Read), settings);
 	}
 
 	public void LoadRaw(string str)
 	{
-		Load(new MemoryStream (((new ES3Settings (ES3.Location.File)).encoding).GetBytes(str)), new ES3Settings(ES3.Location.File));
+		Load(new MemoryStream (((new ES3Settings ()).encoding).GetBytes(str)), new ES3Settings());
 	}
 
 	public void LoadRaw(string str, ES3Settings settings)
@@ -172,7 +130,7 @@ public class ES3Spreadsheet
 		{
 			int c_int;
 			char c;
-			string value = null;
+			string value = "";
 			int col = 0;
 			int row = 0;
 
@@ -202,7 +160,7 @@ public class ES3Spreadsheet
 				else if(c == COMMA_CHAR || c == NEWLINE_CHAR || c_int == -1)
 				{
 					SetCell(col, row, value);
-					value = null;
+					value = "";
 					if(c == COMMA_CHAR)
 						col++;
 					else if(c == NEWLINE_CHAR)
@@ -246,13 +204,6 @@ public class ES3Spreadsheet
 
 	public void Save(ES3Settings settings, bool append)
 	{
-		// Spreadsheets can't be written to cache, so write to file instead.
-		if (settings.location == ES3.Location.Cache)
-		{
-			settings = (ES3Settings)settings.Clone();
-			settings.location = ES3.Location.File;
-		}
-
 		using (var writer = new StreamWriter(ES3Stream.CreateStream(settings, append ? ES3FileMode.Append : ES3FileMode.Write)))
 		{
 			// If data already exists and we're appending, we need to prepend a newline.
@@ -290,7 +241,7 @@ public class ES3Spreadsheet
 			str = str.Replace(QUOTE, ESCAPED_QUOTE);
 		
 		// If there's chars to escape, wrap the value in quotes.
-		if(str.IndexOfAny(CHARS_TO_ESCAPE) > -1 || StartsOrEndsWithWhitespace(str))
+		if(str.IndexOfAny(CHARS_TO_ESCAPE) > -1)
 			str = QUOTE + str + QUOTE;
 		return str;
 	}
@@ -304,20 +255,6 @@ public class ES3Spreadsheet
 				str = str.Replace(ESCAPED_QUOTE, QUOTE);
 		}
 		return str;
-	}
-
-	private static bool StartsOrEndsWithWhitespace(string str)
-	{
-		if (string.IsNullOrEmpty(str))
-			return false;
-
-		if (char.IsWhiteSpace(str[0]))
-			return true;
-
-		if (char.IsWhiteSpace(str[str.Length - 1]))
-			return true;
-
-		return false;
 	}
 
 	private string[,] ToArray()

@@ -11,21 +11,15 @@ namespace ES3Editor
 		public ES3Defaults editorSettings = null;
 		public ES3SerializableSettings settings = null;
 		public SerializedObject so = null;
-		public SerializedProperty referenceFoldersProperty = null;
+		public SerializedProperty assemblyNamesProperty = null;
 
-        Vector2 scrollPos = Vector2.zero;
-        const string disableGlobalDefineName = "ES3GLOBAL_DISABLED";
+        private Vector2 scrollPos = Vector2.zero;
 
-        public SettingsWindow(EditorWindow window) : base("Settings", window){}
-
-        public void OnEnable()
-        {
-
-        }
+		public SettingsWindow(EditorWindow window) : base("Settings", window){}
 
 		public override void OnGUI()
 		{
-			if(settings == null || editorSettings == null)
+			if(settings == null || editorSettings == null || assemblyNamesProperty == null)
 				Init();
 
             var style = EditorStyle.Get;
@@ -87,77 +81,65 @@ namespace ES3Editor
                         editorSettings.autoUpdateReferences = EditorGUILayout.Toggle(editorSettings.autoUpdateReferences);
                     }
 
-                    if (editorSettings.autoUpdateReferences)
-                    {
-                        using (new EditorGUILayout.HorizontalScope())
-                        {
-                            var content = new GUIContent("-- When changes are made", "Should Easy Save update the reference manager when objects in your scene changes?");
-                            editorSettings.updateReferencesWhenSceneChanges = EditorGUILayout.Toggle(content, editorSettings.updateReferencesWhenSceneChanges);
-                        }
-
-                        using (new EditorGUILayout.HorizontalScope())
-                        {
-                            var content = new GUIContent("-- When scene is saved", "Should Easy Save update the reference manager when objects in your scene is saved?");
-                            editorSettings.updateReferencesWhenSceneIsSaved = EditorGUILayout.Toggle(content, editorSettings.updateReferencesWhenSceneIsSaved);
-                        }
-
-                        using (new EditorGUILayout.HorizontalScope())
-                        {
-                            var content = new GUIContent("-- When scene is opened", "Should Easy Save update the reference manager you open a scene in the Editor?");
-                            editorSettings.updateReferencesWhenSceneIsOpened = EditorGUILayout.Toggle(content, editorSettings.updateReferencesWhenSceneIsOpened);
-                        }
-                        EditorGUILayout.Space();
-                    }
-
                     using (new EditorGUILayout.HorizontalScope())
-                    {
-                        so.Update();
-                        EditorGUILayout.PropertyField(referenceFoldersProperty, true);
-                        so.ApplyModifiedProperties();
-                    }
-                    EditorGUILayout.Space();
-
-                    /*using (new EditorGUILayout.HorizontalScope())
                     {
                         var content = new GUIContent("Reference depth", "How deep should Easy Save look when gathering references from an object? Higher means deeper.");
-                        EditorGUILayout.PrefixLabel(content);
+                        EditorGUILayout.PrefixLabel("Reference depth");
                         editorSettings.collectDependenciesDepth = EditorGUILayout.IntField(editorSettings.collectDependenciesDepth);
-                    }*/
-
-                    using (new EditorGUILayout.HorizontalScope())
-                    {
-                        var content = new GUIContent("Reference timeout (seconds)", "How many seconds should Easy Save taking collecting references for an object before timing out?");
-                        EditorGUILayout.PrefixLabel(content);
-                        editorSettings.collectDependenciesTimeout = EditorGUILayout.IntField(editorSettings.collectDependenciesTimeout);
                     }
 
                     using (new EditorGUILayout.HorizontalScope())
                     {
                         EditorGUILayout.PrefixLabel("Use Global References");
 
-                        bool useGlobalReferences = !ES3ScriptingDefineSymbols.HasDefineSymbol(disableGlobalDefineName);
+                        var symbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup);
+                        bool useGlobalReferences = !symbols.Contains("ES3GLOBAL_DISABLED");
                         if(EditorGUILayout.Toggle(useGlobalReferences) != useGlobalReferences)
                         {
-                            // If global references is currently enabled, we want to disable it by adding the DISABLE precompiler directive.
+                            // Remove the existing symbol even if we're disabling global references, just incase it's already in there.
+                            symbols = symbols.Replace("ES3GLOBAL_DISABLED;", ""); // With semicolon
+                            symbols = symbols.Replace("ES3GLOBAL_DISABLED", "");  // Without semicolon
+
+                            // Add the symbol if useGlobalReferences is currently true, meaning that we want to disable it.
                             if (useGlobalReferences)
-                            {
-                                ES3ScriptingDefineSymbols.SetDefineSymbol(disableGlobalDefineName);
+                                symbols = "ES3GLOBAL_DISABLED;" + symbols;
+
+                            PlayerSettings.SetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup, symbols);
+
+                            if(useGlobalReferences)
                                 EditorUtility.DisplayDialog("Global references disabled for build platform", "This will only disable Global References for this build platform. To disable it for other build platforms, open that platform in the Build Settings and uncheck this box again.", "Ok");
-
-                            }
-                            // Else we want to enable it by removing the DISABLE precompiler directive.
-                            else
-                                ES3ScriptingDefineSymbols.RemoveDefineSymbol(disableGlobalDefineName);
-
-                            AssetDatabase.Refresh();
                         }
                     }
 
                     using (new EditorGUILayout.HorizontalScope())
                     {
-                        var content = new GUIContent("Add All Prefabs to Manager", "Should all prefabs with ES3Prefab Components be added to the manager?");
-                        EditorGUILayout.PrefixLabel(content);
+                        EditorGUILayout.PrefixLabel("Add All Prefabs to Manager");
                         editorSettings.addAllPrefabsToManager = EditorGUILayout.Toggle(editorSettings.addAllPrefabsToManager);
+                    }
+
+                    EditorGUILayout.Space();
+
+                    using (new EditorGUILayout.HorizontalScope())
+                    {
+                        EditorGUILayout.PrefixLabel("Use Assembly Definition Files");
+
+                        bool useAssemblyDefinitionFilesCurrent = System.IO.File.Exists(ES3Settings.PathToEasySaveFolder() + "EasySave3.asmdef");
+                        bool useAssemblyDefinitionFilesNew = EditorGUILayout.Toggle(useAssemblyDefinitionFilesCurrent);
+
+                        if(useAssemblyDefinitionFilesNew == true && useAssemblyDefinitionFilesCurrent == false)
+                        {
+                            System.IO.File.Move(ES3Settings.PathToEasySaveFolder() + "Disabled_EasySave3.disabled", ES3Settings.PathToEasySaveFolder() + "EasySave3.asmdef");
+                            System.IO.File.Move(ES3Settings.PathToEasySaveFolder() + "Editor/Disabled_EasySave3Editor.disabled", ES3Settings.PathToEasySaveFolder() + "Editor/EasySave3Editor.asmdef");
+                            AssetDatabase.Refresh();
+                        }
+
+                        if (useAssemblyDefinitionFilesNew == false && useAssemblyDefinitionFilesCurrent == true)
+                        {
+                            
+                            System.IO.File.Move(ES3Settings.PathToEasySaveFolder() + "EasySave3.asmdef", ES3Settings.PathToEasySaveFolder() + "Disabled_EasySave3.disabled");
+                            System.IO.File.Move(ES3Settings.PathToEasySaveFolder() + "Editor/EasySave3Editor.asmdef", ES3Settings.PathToEasySaveFolder() + "Editor/Disabled_EasySave3Editor.disabled");
+                            AssetDatabase.Refresh();
+                        }
                     }
 
                     EditorGUILayout.Space();
@@ -173,10 +155,13 @@ namespace ES3Editor
 		public void Init()
 		{
             editorSettings = ES3Settings.defaultSettingsScriptableObject;
+
 			settings = editorSettings.settings;
-            so = new SerializedObject(editorSettings);
-            referenceFoldersProperty = so.FindProperty("referenceFolders");
-        }
+			/*so = new SerializedObject(editorSettings);
+			var settingsProperty = so.FindProperty("settings");
+			assemblyNamesProperty = settingsProperty.FindPropertyRelative("assemblyNames");*/
+			
+		}
 	}
 
 }

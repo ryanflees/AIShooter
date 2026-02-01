@@ -1,4 +1,7 @@
 ﻿using System;
+using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 using ES3Internal;
 
 namespace ES3Types

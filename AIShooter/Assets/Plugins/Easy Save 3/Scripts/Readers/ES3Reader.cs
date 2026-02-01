@@ -243,9 +243,7 @@ public abstract class ES3Reader : System.IDisposable
 		type.ReadInto<T>(this, obj);
 
 		EndReadObject();
-
-        TryOnAfterDeserialize(obj);
-    }
+	}
 
 	protected virtual T ReadObject<T>(ES3Type type)
 	{
@@ -255,17 +253,8 @@ public abstract class ES3Reader : System.IDisposable
 		object obj = type.Read<T>(this);
 
 		EndReadObject();
-
-		TryOnAfterDeserialize(obj);
-
 		return (T)obj;
 	}
-
-	internal static void TryOnAfterDeserialize(object obj)
-	{
-        if (obj is ISerializationCallbackReceiver scr)
-            scr.OnAfterDeserialize();
-    }
 		
 
 	#endregion
@@ -318,12 +307,8 @@ public abstract class ES3Reader : System.IDisposable
 		else if(settings.typeChecking)
 		{
 			Type type = ReadKeyPrefix();
-
-            if(type == null)
-                throw new TypeLoadException("Trying to load data of type " + typeof(T) + ", but the type of data contained in file no longer exists. This may be because the type has been removed from your project or renamed.");
-            else if (type != typeof(T) && !ES3Reflection.IsAssignableFrom(typeof(T), type))
-                throw new InvalidOperationException("Trying to load data of type " + typeof(T) + ", but data contained in file is type of " + type + ".");
-
+			if(type != typeof(T))
+				throw new InvalidOperationException("Trying to load data of type "+typeof(T)+", but data contained in file is type of "+type+".");
 			return type;
 		}
 		else
