@@ -49,6 +49,16 @@ namespace CR
 
         #region Bobbing
         private BobbingCurve m_BobbingCurve = new BobbingCurve();
+
+        [Header("Bobbing Settings")]
+        public float m_BobbingWalkSpeed = 5f;
+        public float m_BobbingRunSpeed = 7f;
+        public float m_BobbingSprintSpeed = 10f;
+        public float m_BobbingCrouchSpeed = 20f;
+        public float m_BobbingAngleResetSpeed = 3f;
+        public float m_BobbingIdleThreshold = 0.01f;
+
+        public BobbingCurve BobbingCurve => m_BobbingCurve;
         #endregion
 
         #region Fall Check
@@ -82,11 +92,13 @@ namespace CR
 
         private void InitBobCurve()
         {
-            // if (m_PlayerBobCurve == null)
-            // {
-            //     m_PlayerBobCurve = new PlayBobCurve();
-            // }
-            // m_PlayerBobCurve.m_PlayerController = this;
+            // Sync inspector values to bobbing curve
+            m_BobbingCurve.m_WalkSpeed = m_BobbingWalkSpeed;
+            m_BobbingCurve.m_RunSpeed = m_BobbingRunSpeed;
+            m_BobbingCurve.m_SprintSpeed = m_BobbingSprintSpeed;
+            m_BobbingCurve.m_CrouchSpeed = m_BobbingCrouchSpeed;
+            m_BobbingCurve.m_AngleResetSpeed = m_BobbingAngleResetSpeed;
+            m_BobbingCurve.m_IdleThreshold = m_BobbingIdleThreshold;
         }
 
         private void InitKinematic()
@@ -790,7 +802,7 @@ namespace CR
         #region Status
 
         private void UpdateStatus(float dt)
-        {;
+        {
             if (m_PlayerStatus != null)
             {
                 m_PlayerStatus.m_IsAlive = IsAlive();
@@ -836,8 +848,8 @@ namespace CR
                     m_PlayerStatus.m_IsADSModeTurningOff = false;
                 }
 
+                // Update bobbing curve (it will set m_PlayerStatus.m_BuiltinCurveAngle internally)
                 m_BobbingCurve.UpdateCurve(dt, m_PlayerStatus);
-                m_PlayerStatus.m_BuiltinCurveAngle = m_BobbingCurve.BuiltinCurveAngle;
             }
         }
 

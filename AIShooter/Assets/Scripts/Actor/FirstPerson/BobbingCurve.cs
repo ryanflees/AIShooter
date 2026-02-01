@@ -12,13 +12,13 @@ namespace CR
         private float m_BuiltinCurveAngle = 0f;
         private bool m_WasMoving = false;
 
-        [Header("Speed Settings")]
+        // Speed Settings
         public float m_WalkSpeed = 5f;
         public float m_RunSpeed = 7f;
         public float m_SprintSpeed = 10f;
         public float m_CrouchSpeed = 20f;
 
-        [Header("Reset Settings")]
+        // Reset Settings
         public float m_AngleResetSpeed = 3f;
         public float m_IdleThreshold = 0.01f;
 

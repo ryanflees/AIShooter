@@ -582,7 +582,8 @@ namespace CR
 			{
 				float curveAngle = playerStatus.m_BuiltinCurveAngle;
 				DebugGraph.Log(curveAngle);
-				if (playerStatus.m_CharacterRunSpeedNormalized > 0.01f)
+				//if (playerStatus.m_CharacterRunSpeedNormalized > 0.01f)
+				if (playerStatus.m_CharacterRunSpeedNormalized > 0.2f)
 				{
 					if (playerStatus.m_Crouch)
 					{
