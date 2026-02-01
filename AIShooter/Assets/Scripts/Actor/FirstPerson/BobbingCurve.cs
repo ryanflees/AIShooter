@@ -16,7 +16,7 @@ namespace CR
         public float m_WalkSpeed = 5f;
         public float m_RunSpeed = 7f;
         public float m_SprintSpeed = 10f;
-        public float m_CrouchSpeed = 4f;
+        public float m_CrouchSpeed = 20f;
 
         [Header("Reset Settings")]
         public float m_AngleResetSpeed = 3f;

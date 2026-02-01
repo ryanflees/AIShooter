@@ -72,7 +72,7 @@ namespace CR
 
 		#region Bobbing
 		private Vector3 m_CameraYawBobbingAmount = Vector3.zero;
-		private Vector3 m_CameraYawBobbingAngle = Vector3.zero;
+		//private Vector3 m_CameraYawBobbingAngle = Vector3.zero;
 		public Vector3 m_RunPositionBob = Vector3.zero;
 		public float m_RunPositionBobCrouchMultiplier = 0.8f;
 		public float m_RunPositionBobADSMultiplier = 0.5f;
@@ -595,9 +595,9 @@ namespace CR
 							Mathf.Sin(curveAngle) * m_RunPositionBob.x * multiplier,
 							(Mathf.Cos(curveAngle * m_RunCameraBobYFreq)) * m_RunPositionBob.y * multiplier,
 							Mathf.Sin(curveAngle) * m_RunPositionBob.z * multiplier);
-						m_CameraYawBobbingAmount = Vector3.Lerp(m_CameraYawBobbingAmount, newPos, dt * 3);
+						m_CameraYawBobbingAmount = Vector3.Lerp(m_CameraYawBobbingAmount, newPos * 0.5f, dt * 3);
 
-						m_CameraYawBobbingAngle = Vector3.Lerp(m_CameraYawBobbingAngle, Vector3.zero, dt * 3f);
+						//m_CameraYawBobbingAngle = Vector3.Lerp(m_CameraYawBobbingAngle, Vector3.zero, dt * 3f);
 					}
 					else
 					{
@@ -618,7 +618,7 @@ namespace CR
 								Mathf.Sin(curveAngle) * m_SprintEulerBob.z * angleMultiplier
 								);
 
-							m_CameraYawBobbingAngle = Vector3.Lerp(m_CameraYawBobbingAngle, newEuler, dt * 3f);
+							//m_CameraYawBobbingAngle = Vector3.Lerp(m_CameraYawBobbingAngle, newEuler, dt * 3f);
 						}
 						else
 						{
@@ -632,13 +632,13 @@ namespace CR
 								(Mathf.Cos(curveAngle * m_RunCameraBobYFreq)) * m_RunPositionBob.y * multiplier,
 								Mathf.Sin(curveAngle) * m_RunPositionBob.z * multiplier);
 							m_CameraYawBobbingAmount = Vector3.Lerp(m_CameraYawBobbingAmount, newPos, dt * 3);
-							m_CameraYawBobbingAngle = Vector3.Lerp(m_CameraYawBobbingAngle, Vector3.zero, dt * 3f);
+							//m_CameraYawBobbingAngle = Vector3.Lerp(m_CameraYawBobbingAngle, Vector3.zero, dt * 3f);
 						}
 					}
 				}
 				else
 				{
-					m_CameraYawBobbingAmount = Vector3.Lerp(m_CameraYawBobbingAmount, Vector3.zero, dt * 3);
+					m_CameraYawBobbingAmount = Vector3.Lerp(m_CameraYawBobbingAmount, Vector3.zero, dt * 10);
 				}
 			}
 			else
@@ -647,8 +647,8 @@ namespace CR
 			}
 			DebugGraph.Log(m_CameraYawBobbingAmount);
 			m_CameraYawTrans.localPosition = m_CameraYawBobbingAmount;
-			m_CameraYawBobbingAngle.y = m_CameraYawTrans.localEulerAngles.y;
-			m_CameraYawTrans.localRotation = Quaternion.Euler(m_CameraYawBobbingAngle);
+			//m_CameraYawBobbingAngle.y = m_CameraYawTrans.localEulerAngles.y;
+			//m_CameraYawTrans.localRotation = Quaternion.Euler(m_CameraYawBobbingAngle);
 		}
 
 		#endregion
