@@ -4,6 +4,14 @@ using KinematicCharacterController;
 
 namespace CR
 {
+    public interface FPSPlayerControllerObserver
+    {
+        void ManualUpdate(float dt);
+        void ManualLateUpdate(float dt);
+    
+        Transform GetCharacterRoot();
+    }
+    
     /// <summary>
     /// Main player controller that integrates FPS camera and character movement
     /// Handles input and coordinates between camera and character systems
@@ -12,6 +20,8 @@ namespace CR
     public class FPSPlayerController : MonoBehaviour, KinematicObserver
     {
         public PlayerStatus m_PlayerStatus = new PlayerStatus();
+        
+        public FPSPlayerControllerObserver Observer { set; get; }
         
         [Header("References")]
         public FPSKinematicController m_KinematicController;
@@ -120,6 +130,11 @@ namespace CR
         {
             float dt = Time.deltaTime;
 
+            if (Observer != null)
+            {
+                Observer.ManualUpdate(dt);
+            }
+            
             UpdateTimers(dt);
 
             if (IsAlive())
@@ -139,7 +154,10 @@ namespace CR
         {
             // Update camera after character movement
             float dt = Time.deltaTime;
-
+            if (Observer != null)
+            {
+                Observer.ManualLateUpdate(dt);
+            }
             UpdatePlayerRoot(dt);
             
             if (IsAlive())
