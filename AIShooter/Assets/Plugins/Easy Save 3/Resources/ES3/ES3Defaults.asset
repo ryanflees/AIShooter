@@ -37,7 +37,6 @@ MonoBehaviour:
     - InControl
     - InControl.Examples
     - RootMotion
-    - Unity.Toonshader
     showAdvancedSettings: 0
   addMgrToSceneAutomatically: 0
   autoUpdateReferences: 1
