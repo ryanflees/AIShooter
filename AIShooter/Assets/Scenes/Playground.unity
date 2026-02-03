@@ -826,7 +826,9 @@ MonoBehaviour:
   - {fileID: 2022783988}
   - {fileID: 1468176415}
   - {fileID: 163818642}
+  m_LocomotionStance: 0
   m_CharacterIK: {fileID: 947263405}
+  m_LocomotionTransNormalized: 0.1
 --- !u!114 &1012083958
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -841,6 +843,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Player: {fileID: 3512044031896019261}
   m_DummyCharacter: {fileID: 1012083957}
+  m_SnapSmoothing: 4
+  m_TurnThreholdAngle: 50
 --- !u!1 &1201923425
 GameObject:
   m_ObjectHideFlags: 0

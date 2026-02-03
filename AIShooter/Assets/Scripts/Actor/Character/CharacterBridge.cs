@@ -19,8 +19,9 @@ namespace CR
 		
 		private bool m_IsSnappingToView = false;
 		public float m_SnapSmoothing = 4f;
-		private float m_TurnThreholdAngle = 70f;
+		public float m_TurnThreholdAngle = 70f;
 
+		private Queue<Vector3> m_LookDirProjBuffer = new Queue<Vector3>();
 		#endregion
 		
 		
@@ -60,6 +61,8 @@ namespace CR
 				
 				m_LookDirection = forwardDir;
 				m_LookDirectionProj = forwardDir;
+				
+				m_LookDirProjBuffer.Enqueue(m_LookDirectionProj);
 				
 				GameObject lookAtTargetObj = new GameObject();
 				lookAtTargetObj.name = "LookAtTarget";
@@ -143,6 +146,12 @@ namespace CR
 					-m_Player.m_KinematicController.m_Gravity);
 				m_LookDirectionProj = playerDirProj;
 				m_LookDirection = m_Player.m_CameraPitchTrans.forward;
+				
+				m_LookDirProjBuffer.Enqueue(m_LookDirectionProj);
+				if (m_LookDirProjBuffer.Count > 3)
+				{
+					m_LookDirProjBuffer.Dequeue();
+				}
 			}
 			UpdateDummyCharacter(dt);
 		}
@@ -183,7 +192,8 @@ namespace CR
 					if (m_IsSnappingToView)
 					{
 						Vector3 forward = GetCharacterForwardDirection();
-						Vector3 targetDir = m_LookDirectionProj;
+						Vector3 targetDir = m_LookDirProjBuffer.Peek(); //m_LookDirectionProj
+						
 						Quaternion forwardRot = Quaternion.LookRotation(forward, gravityUp);
 						Quaternion lookRot = Quaternion.LookRotation(targetDir, gravityUp);
 						float lerpStrength = m_SnapSmoothing;
