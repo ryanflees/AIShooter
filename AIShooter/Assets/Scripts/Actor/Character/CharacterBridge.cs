@@ -51,8 +51,8 @@ namespace CR
 				m_Player.OnStand = OnCallStand;
 				m_Player.OnJumpStart = OnJumpStarted;	
 				m_Player.OnJumpEnd = OnJumpEnd;
-				// m_Player.OnSlideStart = OnSlideStart;
-				// m_Player.OnSlideEnd = OnSlideEnd;
+				m_Player.OnSlideStart = OnSlideStart;
+				m_Player.OnSlideEnd = OnSlideEnd;
 				//
 			}
 
@@ -545,6 +545,30 @@ namespace CR
 			// // {
 			// // 	m_NetworkObserver.CallJumpEnd();
 			// // }
+		}
+		
+		public void OnSlideStart()
+		{
+			if (m_DummyCharacter != null)
+			{
+				m_DummyCharacter.PlaySlide();
+			}
+			// if (m_NetworkObserver != null)
+			// {
+			// 	m_NetworkObserver.CallSlideStart();
+			// }
+		}
+
+		public void OnSlideEnd()
+		{
+			if (m_DummyCharacter != null)
+			{
+				m_DummyCharacter.PlayLocomotion(0.25f);
+			}
+			// if (m_NetworkObserver != null)
+			// {
+			// 	m_NetworkObserver.CallSlideEnd();
+			// }
 		}
 		#endregion
 

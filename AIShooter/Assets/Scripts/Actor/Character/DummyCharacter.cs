@@ -610,7 +610,7 @@ namespace CR
 			// 	// }
 			// }
 
-			float fade = 0.2f;
+			float fade = 0.05f;
 			if (!isOnGround)
 			{
 				fade = 0.01f;
@@ -734,6 +734,104 @@ namespace CR
 		}
 
 		#endregion
+
+		#region State Check
+
+				public bool IsStateNearEnd(AnimatorStateInfo state, float normalizedTime = 0.99f)
+        {
+			return state.normalizedTime > normalizedTime;
+        }
+
+		//public bool IsPlayingStates(string[] names, int layer)
+		public bool IsPlayingStates(int[] hashIDs, int layer)
+		{
+			AnimatorStateInfo curState = m_Animator.GetCurrentAnimatorStateInfo(layer);
+			AnimatorStateInfo nextState = m_Animator.GetNextAnimatorStateInfo(layer);
+
+			for (int i = 0; i < hashIDs.Length; i ++)
+            {
+				//if (nextState.IsName(names[i]))
+				if (nextState.shortNameHash == hashIDs[i])
+				{
+					//Debug.Log("next state " + name);
+					return true;
+				}
+				//if (curState.IsName(names[i]) && nextState.IsName("") 
+				//&& !IsStateNearEnd(curState)
+				//	)
+				if (curState.shortNameHash == hashIDs[i] && nextState.IsName(""))
+				{
+					//Debug.Log("cur state " + name + " next state null");
+					return true;
+				}
+			}
+			return false;
+		}
+
+		//public bool IsPlayingStateCheckEnd(string name, int layer, float endTime)
+		public bool IsPlayingStateCheckEnd(int hashID, int layer, float endTime)
+		{
+			AnimatorStateInfo curState = m_Animator.GetCurrentAnimatorStateInfo(layer);
+			AnimatorStateInfo nextState = m_Animator.GetNextAnimatorStateInfo(layer);
+
+			//if (nextState.IsName(name))
+			if (nextState.shortNameHash == (hashID))
+			{
+				//Debug.Log("next state " + name);
+				return true;
+			}
+			//if (curState.IsName(name) && nextState.IsName("")
+			//	&& !IsStateNearEnd(curState, endTime))
+			if (curState.shortNameHash == (hashID) && nextState.IsName("")
+				&& !IsStateNearEnd(curState, endTime))
+			{
+				//Debug.Log("cur state " + name + " next state null");
+				return true;
+			}
+			return false;
+		}
+
+		public bool IsPlayingStateCheckEnd(int hashID, int layer)
+		{
+			return IsPlayingStateCheckEnd(hashID, layer, 0.99f);
+		}
+
+		//public bool IsPlayingState(string name, int layer)
+		public bool IsPlayingState(int hashID, int layer)
+		{
+			AnimatorStateInfo curState = m_Animator.GetCurrentAnimatorStateInfo(layer);
+			AnimatorStateInfo nextState = m_Animator.GetNextAnimatorStateInfo(layer);
+
+			//if (nextState.IsName(name))
+			if (nextState.shortNameHash == hashID)
+			{
+				//Debug.Log("next state " + name);
+				return true;
+			}
+			//if (curState.IsName(name) && nextState.IsName("") )
+			if (curState.shortNameHash == hashID && nextState.IsName(""))
+			{
+				//Debug.Log("cur state " + name + " next state null");
+				return true;
+			}
+			return false;
+		}
+
+		#endregion
+		
+		#region Slide
+
+		public bool IsPlayingSlide()
+		{
+			return IsPlayingState(L_0__SLIDE_ID, LAYER_0);
+		}
+
+		public void PlaySlide()
+		{
+			m_Animator.CrossFadeInFixedTime(L_0__SLIDE_ID, 0.1f, LAYER_0, 0f);
+		}
+
+		#endregion
 		
 		#region Locomotion
 		
@@ -789,6 +887,40 @@ namespace CR
 			else
 			{
 				m_Animator.CrossFadeInFixedTime(hashID, fade, LAYER_0, normalizedTime);
+			}
+		}
+		
+		public void PlayLocomotion(float duration)
+		{
+			if (m_LocomotionStance == LocomotionStance.Stand)
+			{
+				if (m_LocomotionType == LocomotionType.Unarmed)
+				{
+					PlayDefaultStandLocomotion(duration);
+				}
+				else if (m_LocomotionType == LocomotionType.Pistol)
+				{
+					PlayPistolStandLocomotion(duration);
+				}
+				else if (m_LocomotionType == LocomotionType.Rifle)
+				{
+					PlayRifleStandLocomotion(duration);
+				}
+			}
+			else if (m_LocomotionStance == LocomotionStance.Crouch)
+			{
+				if (m_LocomotionType == LocomotionType.Unarmed)
+				{
+					PlayDefaultCrouchLocomotion(duration);
+				}
+				else if (m_LocomotionType == LocomotionType.Pistol)
+				{
+					PlayPistolCrouchLocomotion(duration);
+				}
+				else if (m_LocomotionType == LocomotionType.Rifle)
+				{
+					PlayRifleCrouchLocomotion(duration);
+				}
 			}
 		}
 		#endregion

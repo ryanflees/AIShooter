@@ -561,10 +561,10 @@ namespace CR
             {
                 m_CameraController.EnabelSliding();
             }
-            // if (OnSlideStart != null)
-            // {
-            //     OnSlideStart();
-            // }
+            if (OnSlideStart != null)
+            {
+                OnSlideStart();
+            }
         }
 
         private void Slide()
@@ -645,12 +645,12 @@ namespace CR
         public delegate void FloatDelegate(float value);
         public delegate void IntDelegate(int value);
 
-        public VoidDelegate OnSlideStart;
-        public VoidDelegate OnSlideEnd;
         public VoidDelegate OnCrouch;
         public VoidDelegate OnStand;
         public VoidDelegate OnJumpStart;
         public VoidDelegate OnJumpEnd;
+        public VoidDelegate OnSlideStart;
+        public VoidDelegate OnSlideEnd;
         #endregion
 
         #region Player Transform
