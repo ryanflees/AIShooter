@@ -38,6 +38,13 @@ namespace CR
 			if (m_Player)
 			{
 				m_Player.Observer = this;
+				m_Player.OnCrouch = OnCallCrouch;
+				m_Player.OnStand = OnCallStand;
+				m_Player.OnJumpStart = OnJumpStarted;	
+				m_Player.OnJumpEnd = OnJumpEnd;
+				// m_Player.OnSlideStart = OnSlideStart;
+				// m_Player.OnSlideEnd = OnSlideEnd;
+				//
 			}
 
 			InitLookAtDirection();
@@ -82,7 +89,7 @@ namespace CR
 			// 	GameObject lookAtTargetObj = new GameObject();
 			// 	lookAtTargetObj.name = "LookAtTarget";
 			// 	m_LookAtTarget = lookAtTargetObj.transform;
-			// 	m_LookAtTarget.transform.parent = m_MainPlayer.transform;
+			// 	m_LookAtTarget.transform.parent = m_Player.transform;
 			// 	UpdateLookAtTargetPosition();
 			//
 			// 	m_DummyCharacter.m_IKController.SetLookAtIK(m_LookAtTarget);
@@ -91,7 +98,7 @@ namespace CR
 			// 	GameObject aimTargetObj = new GameObject();
 			// 	aimTargetObj.name = "AimTarget";
 			// 	m_AimTarget = aimTargetObj.transform;
-			// 	m_AimTarget.transform.parent = m_MainPlayer.transform;
+			// 	m_AimTarget.transform.parent = m_Player.transform;
 			// 	UpdateAimTargetPosition();
 			// 	m_DummyCharacter.m_IKController.SetAimIKTarget(m_AimTarget);
 			// }
@@ -312,7 +319,69 @@ namespace CR
 		}
 
 		#endregion
+		
+		#region Player Events
+
+		private void OnCallCrouch()
+		{
+			// // if (m_NetworkObserver != null)
+			// // {
+			// // 	m_NetworkObserver.CallCrouch();
+			// // }
+			if (m_DummyCharacter)
+			{
+				bool playDetail = false; //CheckPlayerBeingStillOnGround();
+				m_DummyCharacter.Play2Crouch(playDetail, m_Player.IsOnGround());
+			}
+		}
+
+		private void OnCallStand()
+		{
+			// if (m_NetworkObserver != null)
+			// {
+			// 	m_NetworkObserver.CallStand();
+			// }
+			if (m_DummyCharacter)
+			{
+				bool playDetail = false;// CheckPlayerBeingStillOnGround();
+				m_DummyCharacter.Play2Stand(playDetail);
+			}
+		}
+
+		private void OnJumpStarted()
+		{
+			// if (m_DummyCharacter == null) return;
+			// m_DummyCharacter.PlayJumpStart();
+			// // if (m_NetworkObserver != null)
+			// // {
+			// // 	m_NetworkObserver.CallJumpStart();
+			// // }
+		}
+
+		private void OnJumpEnd()
+		{
+			// if (m_DummyCharacter == null) return;
+			// 	
+			// if (!m_DummyCharacter.IsPlayingCrouchLocomotion())
+			// {
+			// 	if (CheckPlayerBeingStillOnGround())
+			// 	{
+			//
+			// 		m_DummyCharacter.PlayJumpEnd();
+			// 	}
+			// 	else
+			// 	{
+			// 		m_DummyCharacter.PlayLocomotion();
+			// 	}
+			// }
+			// 		
+			// // if (m_NetworkObserver != null)
+			// // {
+			// // 	m_NetworkObserver.CallJumpEnd();
+			// // }
+		}
+		#endregion
 	}
 
-	
+
 }

@@ -418,10 +418,10 @@ namespace CR
                 m_CameraController.ShiftCameraHeightPos(m_CameraController.m_CamCrouchHeight);
             }
 
-            // if (OnCrouchObserver != null)
-            // {
-            //     OnCrouchObserver();
-            // }
+            if (OnCrouch != null)
+            {
+                OnCrouch();
+            }
         }
 
         private bool SwitchPoseStand(bool isInAir)
@@ -488,10 +488,10 @@ namespace CR
 
             if (res)
             {
-                // if (OnStandObserver != null)
-                // {
-                //     OnStandObserver();
-                // }
+                if (OnStand != null)
+                {
+                    OnStand();
+                }
             }
 
             return res;
@@ -643,7 +643,12 @@ namespace CR
         public delegate void FloatDelegate(float value);
         public delegate void IntDelegate(int value);
 
+        public VoidDelegate OnSlideStart;
         public VoidDelegate OnSlideEnd;
+        public VoidDelegate OnCrouch;
+        public VoidDelegate OnStand;
+        public VoidDelegate OnJumpStart;
+        public VoidDelegate OnJumpEnd;
         #endregion
 
         #region Player Transform
@@ -715,10 +720,11 @@ namespace CR
             m_InAirTimer = 0f;
             m_InAirHighest = GetPlayerPosition();
             m_InAirGravity = m_KinematicController.m_Gravity;
-            // if (OnJumpStart != null)
-            // {
-            //     OnJumpStart();
-            // }
+            //trigger and event
+            if (OnJumpStart != null)
+            {
+                OnJumpStart();
+            }
         }
 
         public void OnJumpLanded()
@@ -742,10 +748,11 @@ namespace CR
             float fallDistance = fallProjected.magnitude;
             bool takingDamage = false;
 
-            // if (OnJumpEnd != null)
-            // {
-            //     OnJumpEnd();
-            // }
+            //trigger an event
+            if (OnJumpEnd != null)
+            {
+                OnJumpEnd();
+            }
 
             if (fallDistance >= m_FallDamageMaxDistance)
             {

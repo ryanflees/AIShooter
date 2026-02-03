@@ -398,6 +398,73 @@ namespace CR
 		public List<SkinnedMeshRenderer> m_ArmMeshList;
 		public List<SkinnedMeshRenderer> m_HeadMeshList;
 
+	
+		#region Hashes
+
+		private int[] LocomotionStateHashes;
+		private int[] CrouchStateHashes;
+		private int[] JumpEndStateHashes;
+		private int[] ShowHideWeaponStateHashes;
+		private int[] SwitchCrouchStateHashes;
+		private int[] ShootStateHashes;
+		private int[] ReloadStateHashes;
+
+		private void InitStatesHashID()
+		{
+			LocomotionStateHashes = new int[]
+			{
+				L_0__DEFAULT_STAND_LOCOMOTION_ID,
+				L_0__DEFAULT_CROUCH_LOCOMOTION_ID,
+				L_0__RIFLE_CROUCH_LOCOMOTION_ID,
+				L_0__RIFLE_STAND_LOCOMOTION_ID
+			};
+
+			CrouchStateHashes = new int[]
+			{
+				L_0__DEFAULT_CROUCH_LOCOMOTION_ID,
+				L_0__PISTOL_CROUCH_LOCOMOTION_ID,
+				L_0__RIFLE_CROUCH_LOCOMOTION_ID
+			};
+
+			JumpEndStateHashes = new int[]
+			{
+				L_0__DEFAULT_JUMP_END_ID,
+				L_0__RIFLE_JUMP_END_ID,
+				L_0__PISTOL_JUMP_END_ID
+			};
+
+			ShowHideWeaponStateHashes = new int[]
+			{
+				L_0__SHOW_RIFLE_ID,
+				L_0__HIDE_RIFLE_ID,
+				L_0__SHOW_PISTOL_ID,
+				L_0__HIDE_PISTOL_ID
+			};
+
+			SwitchCrouchStateHashes = new int[]
+			{
+				L_1__DEFAULT_CROUCH_2_STAND_ID,
+				L_1__DEFAULT_STAND_2_CROUCH_ID,
+				L_1__RIFLE_STAND_2_CROUCH_ID,
+				L_1__RIFLE_CROUCH_2_STAND_ID,
+				L_1__PISTOL_STAND_2_CROUCH_ID,
+				L_1__PISTOL_CROUCH_2_STAND_ID
+			};
+
+			ShootStateHashes = new int[]
+			{
+				L_3__RIFLE_SHOOT_ID, L_3__PISTOL_SHOOT_ID
+			};
+
+			ReloadStateHashes = new int[]
+			{
+				L_3__RIFLE_RELOAD_ID, L_3__PISTOL_RELOAD_ID
+			};
+		}
+
+		
+		#endregion
+		
 		#region Stances
 
 		public enum LocomotionType
@@ -436,6 +503,7 @@ namespace CR
 
 		public void Init()
 		{
+			InitStatesHashID();
 			if (m_Animator == null)
 			{
 				m_Animator = GetComponent<Animator>();
@@ -510,7 +578,84 @@ namespace CR
 
 		#endregion
 		
-		#region Locomotion
+		#region Stance
+		public void SetStanceCrouch()
+		{
+			m_LocomotionStance = LocomotionStance.Crouch;
+		}
+
+		public void SetStanceStand()
+		{
+			m_LocomotionStance = LocomotionStance.Stand;
+		}
+		
+		public void Play2Crouch(bool playDetail, bool isOnGround)
+		{
+			SetStanceCrouch();
+			// if (playDetail)
+			// {
+			// 	DisableDetailLayer();
+			// 	SetTurnTagOffOnly();
+			// 	// if (m_CanPlaySwitchCrouchStand)
+			// 	// {
+			// 	// 	EnableDetailLayer();
+			// 	// 	PlayDetailStand2Crouch();
+			// 	// }
+			// }
+
+			float fade = 0.2f;
+			if (!isOnGround)
+			{
+				fade = 0.01f;
+			}
+			if (m_LocomotionType == LocomotionType.Unarmed)
+			{
+				PlayLocomotionFixedTime(L_0__DEFAULT_CROUCH_LOCOMOTION_ID, fade);
+			}
+			else if (m_LocomotionType == LocomotionType.Rifle)
+			{
+				PlayLocomotionFixedTime(L_0__RIFLE_CROUCH_LOCOMOTION_ID, fade);
+				//PlayRifleCrouchAim();
+			}
+			else if (m_LocomotionType == LocomotionType.Pistol)
+			{
+				PlayLocomotionFixedTime(L_0__PISTOL_CROUCH_LOCOMOTION_ID, fade);
+				//PlayPistolCrouchAim();
+			}
+		}
+		
+		public void Play2Stand(bool playDetail)
+		{
+			SetStanceStand();
+			// if (playDetail)
+			// {
+			// 	DisableDetailLayer();
+			// 	SetTurnTagOffOnly();
+			// 	// if (m_CanPlaySwitchCrouchStand)
+			// 	// {
+			// 	// 	EnableDetailLayer();
+			// 	// 	PlayDetailCrouch2Stand();
+			// 	// }
+			// }
+
+			if (m_LocomotionType == LocomotionType.Unarmed)
+			{
+				PlayLocomotionFixedTime(L_0__DEFAULT_STAND_LOCOMOTION_ID, 0.2f);
+			}
+			else if (m_LocomotionType == LocomotionType.Rifle)
+			{
+				PlayLocomotionFixedTime(L_0__RIFLE_STAND_LOCOMOTION_ID, 0.2f);
+				//PlayRifleStandAim();
+			}
+			else if (m_LocomotionType == LocomotionType.Pistol)
+			{
+				PlayLocomotionFixedTime(L_0__PISTOL_STAND_LOCOMOTION_ID, 0.2f);
+				//PlayPistolStandAim();
+			}
+		}
+		#endregion
+
+		#region Turn
 
 		private bool m_PlayingTurnLeft;
 		private bool m_PlayingTurnRight;
@@ -523,6 +668,12 @@ namespace CR
 			}
 			m_PlayingTurnRight = false;
 			m_PlayingTurnLeft = false;
+		}
+		
+		public void SetTurnTagOffOnly()
+		{
+			m_PlayingTurnLeft = false;
+			m_PlayingTurnRight = false;
 		}
 		
 		public bool PlayTurn(float angle)
@@ -573,6 +724,65 @@ namespace CR
 			m_Animator.SetFloat(PARAM_TURNVALUE_ID, value);
 			m_Animator.SetBool(PARAM_ISCROUCH_ID, true);
 			m_Animator.SetTrigger(PARAM_TRIGGERTURN_ID);
+		}
+
+		#endregion
+		
+		#region Locomotion
+		
+		[Range(0, 1)]
+		public float m_LocomotionTransNormalized = 0.1f;
+		
+		public bool CheckPlayingLocomotion()
+		{
+			AnimatorStateInfo curState = m_Animator.GetCurrentAnimatorStateInfo(LAYER_0);
+			for (int i = 0;i < LocomotionStateHashes.Length; i ++)
+			{
+				//if (curState.IsName(LocomotionStateHashes[i]))
+				if (curState.shortNameHash == LocomotionStateHashes[i])
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+		
+		public float GetCurrentLocomotionNormalizedTime(out bool prevIsLocomotion)
+		{
+			if (CheckPlayingLocomotion())
+			{
+				prevIsLocomotion = true;
+				AnimatorStateInfo curState = m_Animator.GetCurrentAnimatorStateInfo(LAYER_0);
+				return curState.normalizedTime;
+			}
+			prevIsLocomotion = false;
+			return 0f;
+		}
+		
+		public void PlayLocomotionFixedTime(int hashID, float fade)
+		{
+			bool prevLocomotion = false;
+			float normalizedTime = GetCurrentLocomotionNormalizedTime(out prevLocomotion);
+			normalizedTime += m_LocomotionTransNormalized;
+			normalizedTime %= 1f;
+			m_Animator.CrossFadeInFixedTime(hashID, fade, LAYER_0, normalizedTime);
+		}
+
+		//public void PlayLocomotion(string stateName, float fade)
+		public void PlayLocomotion(int hashID, float fade)
+		{
+			bool prevLocomotion = false;
+			float normalizedTime = GetCurrentLocomotionNormalizedTime(out prevLocomotion);
+			normalizedTime += m_LocomotionTransNormalized;
+			normalizedTime %= 1f;
+			if (prevLocomotion)
+			{
+				m_Animator.CrossFade(hashID, fade, LAYER_0, normalizedTime);
+			}
+			else
+			{
+				m_Animator.CrossFadeInFixedTime(hashID, fade, LAYER_0, normalizedTime);
+			}
 		}
 		#endregion
 	}
