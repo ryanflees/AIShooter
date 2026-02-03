@@ -124,22 +124,6 @@ namespace CR
 		public RotateDirectionStatus m_LastRotateDirectionStatus = RotateDirectionStatus.None;
 
 		#region Offset
-		[System.Serializable]
-		public class CameraOffsetData
-		{
-			public Vector3 m_CamDefaultOffset = new Vector3(0f, 0f, 0f);
-			public Vector3 m_CamOffsetStand = new Vector3(0f, -0.14f, 0.24f);
-			public Vector3 m_CamOffsetStandInAir = new Vector3(0f, -0.14f, 0.24f);
-			public Vector3 m_CamOffsetRun = new Vector3(0f, -0.14f, 0.24f);
-			public Vector3 m_CamOffsetRunInAir = new Vector3(0f, -0.14f, 0.24f);
-			public Vector3 m_CamOffsetSprint = new Vector3(0f, -0.14f, 0.24f);
-			public Vector3 m_CamOffsetCrouch = new Vector3(0f, -0.14f, 0.24f);
-			public Vector3 m_CamOffsetCrouchRun = new Vector3(0f, -0.14f, 0.24f);
-		}
-	
-		public CameraOffsetData m_CamOffsetUnarmed = new CameraOffsetData();
-		public CameraOffsetData m_CamOffsetRifle = new CameraOffsetData();
-		public CameraOffsetData m_CamOffsetPistol = new CameraOffsetData();
 
 		private Vector3 m_CamTargetOffset = Vector3.zero;
 		private Vector3 m_CamTargetDefaultOffset = Vector3.zero;
@@ -818,7 +802,7 @@ namespace CR
 		#region Camera Offset
 		private void SetLookDownCamOffset()
 		{
-			CameraOffsetData offsetData = GetCurrentCameraOffsetData();
+			var offsetData = GetCurrentCameraOffsetData();
 			if (offsetData != null)
 			{
 				m_CamTargetDefaultOffset = offsetData.m_CamDefaultOffset;
@@ -884,25 +868,12 @@ namespace CR
 			}
 		}
 
-		private CameraOffsetData GetCurrentCameraOffsetData()
+		private CameraOffsetConfig.CameraOffsetData GetCurrentCameraOffsetData()
 		{
-			// if (m_PlayerController.Observer != null)
-   //          {
-			// 	var locomotionType = m_PlayerController.Observer.GetDummyLocomotion(m_PlayerController);
-   //
-			// 	if (locomotionType == DummyCharacter.LocomotionType.Unarmed)
-			// 	{
-			// 		return m_CamOffsetUnarmed;
-			// 	}
-			// 	else if (locomotionType == DummyCharacter.LocomotionType.Pistol)
-			// 	{
-			// 		return m_CamOffsetPistol;
-			// 	}
-			// 	else if (locomotionType == DummyCharacter.LocomotionType.Rifle)
-			// 	{
-			// 		return m_CamOffsetRifle;
-			// 	}
-			// }
+			if (m_PlayerController && m_PlayerController.Observer != null)
+			{
+				return m_PlayerController.Observer.GetCameraOffsetData();
+			}
 			return null;
 		}
         #endregion

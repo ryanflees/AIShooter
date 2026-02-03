@@ -9,7 +9,9 @@ namespace CR
         void ManualUpdate(float dt);
         void ManualLateUpdate(float dt);
     
-        Transform GetCharacterRoot();
+        //Transform GetCharacterRoot();
+
+        CameraOffsetConfig.CameraOffsetData GetCameraOffsetData();
     }
     
     /// <summary>
@@ -876,6 +878,19 @@ namespace CR
                 // Update bobbing curve (it will set m_PlayerStatus.m_BuiltinCurveAngle internally)
                 m_BobbingCurve.UpdateCurve(dt, m_PlayerStatus);
             }
+        }
+
+        #endregion
+
+        #region Camera Offset
+
+        public CameraOffsetConfig.CameraOffsetData GetCurrentCameraOffsetData()
+        {
+            if (Observer != null)
+            {
+                return Observer.GetCameraOffsetData();
+            }
+            return null;
         }
 
         #endregion

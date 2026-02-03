@@ -398,7 +398,8 @@ namespace CR
 		public List<SkinnedMeshRenderer> m_ArmMeshList;
 		public List<SkinnedMeshRenderer> m_HeadMeshList;
 
-	
+		//a transform under head bone, and it's forward direction should align with actual facing direction
+		public Transform m_HeadBoneIndicator;
 		#region Hashes
 
 		private int[] LocomotionStateHashes;
@@ -491,6 +492,12 @@ namespace CR
 		#endregion
 		
 		public CharacterIK m_CharacterIK;
+
+		#region Camera Offset
+
+		public CameraOffsetConfig m_CameraOffsetConfig;
+
+		#endregion
 
 		void Awake()
 		{
@@ -784,6 +791,40 @@ namespace CR
 				m_Animator.CrossFadeInFixedTime(hashID, fade, LAYER_0, normalizedTime);
 			}
 		}
+		#endregion
+
+		#region Update Parameters
+		private float m_TargetForwardParam = 0f;
+		private float m_TargetRightParam = 0f;
+		private float m_TargetSpeedParam = 0f;
+
+		private float m_ForwardParam = 0f;
+		private float m_RightParam = 0f;
+		private float m_SpeedParam = 0f;
+
+		private float m_MovingLerpStrength = 10f;
+		
+		public void UpdateLocomotion(float dt, float forward, float right, float speed)
+		{
+			m_TargetForwardParam = forward;// localVelocity.z;
+			m_TargetRightParam = right;// localVelocity.x;
+			m_TargetSpeedParam = speed;// normalizedSpeed;
+
+			m_ForwardParam = Mathf.Lerp(m_ForwardParam, m_TargetForwardParam, dt * m_MovingLerpStrength);
+			m_RightParam = Mathf.Lerp(m_RightParam, m_TargetRightParam, dt * m_MovingLerpStrength);
+			m_SpeedParam = Mathf.Lerp(m_SpeedParam, m_TargetSpeedParam, dt * m_MovingLerpStrength);
+
+			SetMovementParameter(m_ForwardParam, m_RightParam, m_SpeedParam);
+
+		}
+
+		public void SetMovementParameter(float forward, float right, float speed)
+		{
+			m_Animator.SetFloat(PARAM_FORWARD_ID, forward);
+			m_Animator.SetFloat(PARAM_RIGHT_ID, right);
+			m_Animator.SetFloat(PARAM_SPEED_ID, speed);
+		}
+
 		#endregion
 	}
 }

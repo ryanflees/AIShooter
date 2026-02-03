@@ -1125,7 +1125,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6688178548309432685
 Transform:
   m_ObjectHideFlags: 0
@@ -1217,6 +1217,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2825664223767399085}
   - component: {fileID: 7313737978651867229}
+  - component: {fileID: 937636639076242298}
+  - component: {fileID: 6985560222643792898}
   m_Layer: 0
   m_Name: P03_Tenebro_N_A3_FPS
   m_TagString: Untagged
@@ -1255,7 +1257,7 @@ Animator:
   m_GameObject: {fileID: 1504525106640127414}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 97a70e1893eacab4186f36faae78c2b1, type: 3}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 7b4d4581c0a265a409edaa9030cb4f68, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1267,6 +1269,46 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &937636639076242298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1504525106640127414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5615b2b0c6fd2144b149e2bd68f1915, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Animator: {fileID: 7313737978651867229}
+  m_ArmMeshList:
+  - {fileID: 0}
+  m_HeadMeshList:
+  - {fileID: 190638643247793706}
+  - {fileID: 3347273383483663740}
+  - {fileID: 4518018110784539846}
+  m_HeadBoneIndicator: {fileID: 2052942938316411656}
+  m_LocomotionStance: 0
+  m_CharacterIK: {fileID: 411187459043850273}
+  m_CameraOffsetConfig: {fileID: 11400000, guid: efda9a16ed3d5df408abac703b8ba085, type: 2}
+  m_LocomotionTransNormalized: 0.1
+--- !u!114 &6985560222643792898
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1504525106640127414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aca2ed13004b69e4a83bb7deb9e18962, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Player: {fileID: 0}
+  m_DummyCharacter: {fileID: 937636639076242298}
+  m_SnapSmoothing: 4
+  m_TurnThreholdAngle: 50
 --- !u!1 &1611189647251952783
 GameObject:
   m_ObjectHideFlags: 0
@@ -1991,6 +2033,7 @@ Transform:
   - {fileID: 6770063817171446019}
   - {fileID: 4654391877285139826}
   - {fileID: 1189136950366537686}
+  - {fileID: 2052942938316411656}
   m_Father: {fileID: 3428200966022203880}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2455110779794091551
@@ -8448,6 +8491,37 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4105372943196509990}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &9179279019734026551
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2052942938316411656}
+  m_Layer: 0
+  m_Name: HeadBoneIndicator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2052942938316411656
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9179279019734026551}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8300846204616997091}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &9205560022348015355
 GameObject:
