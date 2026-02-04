@@ -9,48 +9,13 @@ namespace CR.OpenClaw
     /// Unity Main Thread Dispatcher
     /// Allows safe execution of Unity API calls from background threads
     /// </summary>
-    public class UnityMainThreadDispatcher : MonoBehaviour
+    public class UnityMainThreadDispatcher : MetaGameSingleton<UnityMainThreadDispatcher>
     {
-        private static UnityMainThreadDispatcher m_Instance;
+        //private static UnityMainThreadDispatcher m_Instance;
         private static readonly ConcurrentQueue<Action> m_ActionQueue = new ConcurrentQueue<Action>();
-        
-        #region Singleton Pattern
-        
-        public static UnityMainThreadDispatcher Instance()
-        {
-            if (m_Instance == null)
-            {
-                // Try to find existing instance
-                m_Instance = FindObjectOfType<UnityMainThreadDispatcher>();
-                
-                // Create new if not found
-                if (m_Instance == null)
-                {
-                    GameObject dispatcherObj = new GameObject("UnityMainThreadDispatcher");
-                    m_Instance = dispatcherObj.AddComponent<UnityMainThreadDispatcher>();
-                    DontDestroyOnLoad(dispatcherObj);
-                }
-            }
-            
-            return m_Instance;
-        }
-        
-        private void Awake()
-        {
-            if (m_Instance != null && m_Instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-            
-            m_Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        
-        #endregion
-        
+
         #region Public API
-        
+
         /// <summary>
         /// Enqueue an action to be executed on the main thread
         /// </summary>
@@ -61,10 +26,10 @@ namespace CR.OpenClaw
                 Debug.LogWarning("[Dispatcher] Cannot enqueue null action");
                 return;
             }
-            
+
             m_ActionQueue.Enqueue(action);
         }
-        
+
         /// <summary>
         /// Enqueue an action with parameter to be executed on the main thread
         /// </summary>
@@ -75,10 +40,10 @@ namespace CR.OpenClaw
                 Debug.LogWarning("[Dispatcher] Cannot enqueue null action");
                 return;
             }
-            
+
             m_ActionQueue.Enqueue(() => action(parameter));
         }
-        
+
         /// <summary>
         /// Enqueue a function and get result via callback
         /// </summary>
@@ -89,21 +54,21 @@ namespace CR.OpenClaw
                 Debug.LogWarning("[Dispatcher] Cannot enqueue null function or callback");
                 return;
             }
-            
+
             m_ActionQueue.Enqueue(() =>
             {
                 TResult result = function();
                 callback(result);
             });
         }
-        
+
         /// <summary>
         /// Execute action immediately if on main thread, otherwise enqueue it
         /// </summary>
         public void ExecuteOnMainThread(Action action)
         {
             if (action == null) return;
-            
+
             if (IsMainThread())
             {
                 action();
@@ -113,7 +78,7 @@ namespace CR.OpenClaw
                 Enqueue(action);
             }
         }
-        
+
         /// <summary>
         /// Check if current thread is Unity main thread
         /// </summary>
@@ -121,11 +86,11 @@ namespace CR.OpenClaw
         {
             return System.Threading.Thread.CurrentThread.ManagedThreadId == 1;
         }
-        
+
         #endregion
-        
+
         #region Unity Lifecycle
-        
+
         private void Update()
         {
             // Execute all queued actions on the main thread
@@ -142,22 +107,22 @@ namespace CR.OpenClaw
                 }
             }
         }
-        
+
         private void OnDestroy()
         {
-            if (m_Instance == this)
+            if (Instance == this)
             {
-                m_Instance = null;
+                Instance = null;
             }
-            
+
             // Clear queue
             while (m_ActionQueue.TryDequeue(out _)) { }
         }
-        
+
         #endregion
-        
+
         #region Utility Methods
-        
+
         /// <summary>
         /// Find GameObject by name on main thread
         /// </summary>
@@ -169,7 +134,7 @@ namespace CR.OpenClaw
                 callback?.Invoke(obj);
             });
         }
-        
+
         /// <summary>
         /// Find component by type on main thread
         /// </summary>
@@ -181,7 +146,7 @@ namespace CR.OpenClaw
                 callback?.Invoke(component);
             });
         }
-        
+
         /// <summary>
         /// Instantiate prefab on main thread
         /// </summary>
@@ -193,7 +158,7 @@ namespace CR.OpenClaw
                 callback?.Invoke(instance);
             });
         }
-        
+
         /// <summary>
         /// Destroy GameObject on main thread
         /// </summary>
@@ -207,10 +172,10 @@ namespace CR.OpenClaw
                 }
             });
         }
-        
+
         #endregion
     }
-    
+
     /// <summary>
     /// Extension methods for easier main thread execution
     /// </summary>
@@ -221,23 +186,23 @@ namespace CR.OpenClaw
         /// </summary>
         public static void RunOnMainThread(this MonoBehaviour monoBehaviour, Action action)
         {
-            UnityMainThreadDispatcher.Instance().Enqueue(action);
+            UnityMainThreadDispatcher.Instance.Enqueue(action);
         }
-        
+
         /// <summary>
         /// Execute action with parameter on main thread
         /// </summary>
         public static void RunOnMainThread<T>(this MonoBehaviour monoBehaviour, Action<T> action, T parameter)
         {
-            UnityMainThreadDispatcher.Instance().Enqueue(action, parameter);
+            UnityMainThreadDispatcher.Instance.Enqueue(action, parameter);
         }
-        
+
         /// <summary>
         /// Execute function and get result on main thread
         /// </summary>
         public static void RunOnMainThread<TResult>(this MonoBehaviour monoBehaviour, Func<TResult> function, Action<TResult> callback)
         {
-            UnityMainThreadDispatcher.Instance().Enqueue(function, callback);
+            UnityMainThreadDispatcher.Instance.Enqueue(function, callback);
         }
     }
 }

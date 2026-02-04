@@ -291,9 +291,9 @@ namespace CR.OpenClaw
         public void Crouch(bool crouch)
         {
             if (crouch)
-                PressButton(InputControlType.Action6);
+                ClickButton(InputControlType.Action6);
             else
-                ReleaseButton(InputControlType.Action6);
+                ClickButton(InputControlType.Action6);
         }
         
         /// <summary>

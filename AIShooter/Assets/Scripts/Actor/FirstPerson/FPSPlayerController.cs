@@ -677,6 +677,13 @@ namespace CR
             return offset + GetPlayerPosition();
         }
 
+        public Vector3 GetPlayerFaceDirection()
+        {
+            Vector3 playerDirProj = Vector3.ProjectOnPlane(m_CameraPitchTrans.forward,
+                -m_KinematicController.m_Gravity);
+            return playerDirProj;
+        }
+
         public Vector3 GetPlayerRotationEuler()
         {
             return new Vector3(m_CameraPitchTrans.eulerAngles.x, m_CameraYawTrans.eulerAngles.y, 0f);
