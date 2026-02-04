@@ -684,6 +684,10 @@ namespace CR
             return playerDirProj;
         }
 
+        public Vector3 GetPlayerLookDirection()
+        {
+            return m_CameraPitchTrans.forward;
+        }
         public Vector3 GetPlayerRotationEuler()
         {
             return new Vector3(m_CameraPitchTrans.eulerAngles.x, m_CameraYawTrans.eulerAngles.y, 0f);

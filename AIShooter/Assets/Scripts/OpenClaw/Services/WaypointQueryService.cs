@@ -1,9 +1,46 @@
 using System.Collections.Generic;
 using System.Net;
 using UnityEngine;
+using System;
 
 namespace CR.OpenClaw
 {
+    #region Waypoint Models (路点系统)
+
+    [Serializable]
+    public class WaypointData
+    {
+        public int id;
+        public Vector3Data position;
+        public int[] connectedIds;
+        public float distanceFromPlayer;
+        public float angleFromPlayer;
+    }
+
+    [Serializable, AgentRes]
+    public class WaypointsResponse
+    {
+        public WaypointData[] waypoints;
+        public int totalCount;
+    }
+
+    [Serializable, AgentRes]
+    public class WaypointPathResponse
+    {
+        public int[] path;
+        public float totalDistance;
+        public bool pathFound;
+    }
+
+    [Serializable, AgentRes]
+    public class NearestWaypointResponse
+    {
+        public WaypointData waypoint;
+        public float distance;
+    }
+
+    #endregion
+    
     /// <summary>
     /// Service for querying waypoint information
     /// Auto-registers itself with OpenClawAPIServer on Awake
@@ -187,8 +224,8 @@ namespace CR.OpenClaw
                 return ResponseBuilder.CreateStandardError(StandardError.PlayerNotFound);
             }
 
-            Vector3 playerPos = player.transform.position;
-            Vector3 playerForward = player.transform.forward;
+            Vector3 playerPos = player.GetPlayerPosition();
+            Vector3 playerForward = player.GetPlayerFaceDirection();
 
             var nearbyList = new List<WaypointData>();
 

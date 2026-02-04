@@ -1,8 +1,33 @@
 using System.Net;
 using UnityEngine;
+using System;
 
 namespace CR.OpenClaw
 {
+    #region Player State Models (玩家状态查询)
+
+    [Serializable, AgentRes]
+    public class PlayerPositionResponse
+    {
+        public Vector3Data position;
+        public Vector3Data rotation;
+        public Vector3Data lookDir;
+        public Vector3Data faceDir;
+    }
+
+    [Serializable, AgentRes]
+    public class PlayerStateResponse
+    {
+        public bool isGrounded;
+        public bool isCrouching;
+        public bool isSprinting;
+        public bool isSliding;
+        public bool isAlive;
+        public float moveSpeed;
+        public float health;
+    }
+    #endregion
+    
     /// <summary>
     /// Service for querying player state (read-only operations)
     /// Auto-registers itself with OpenClawAPIServer on Awake
@@ -80,9 +105,9 @@ namespace CR.OpenClaw
 
             var response = new PlayerPositionResponse
             {
-                position = new Vector3Data(player.transform.position),
-                rotation = new Vector3Data(player.transform.eulerAngles),
-                lookDir = new Vector3Data(player.GetPlayerRotationEuler()),
+                position = new Vector3Data(player.GetPlayerPosition()),
+                rotation = new Vector3Data(player.GetPlayerRotationEuler()),
+                lookDir = new Vector3Data(player.GetPlayerLookDirection()),
                 faceDir = new Vector3Data(player.GetPlayerFaceDirection())
             };
 

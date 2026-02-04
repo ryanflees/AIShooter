@@ -1,8 +1,46 @@
 using System.Net;
 using UnityEngine;
+using System;
 
 namespace CR.OpenClaw
 {
+    #region Player Command Models (玩家命令)
+    
+    [Serializable, AgentReq]
+    public class MoveCommandRequest
+    {
+        public float x;
+        public float y;
+    }
+
+    [Serializable, AgentReq]
+    public class LookCommandRequest
+    {
+        public float yaw;
+        public float pitch;
+    }
+
+    [Serializable, AgentReq]
+    public class CrouchCommandRequest
+    {
+        public bool crouch;
+    }
+
+    [Serializable, AgentReq]
+    public class SprintCommandRequest
+    {
+        public bool sprint;
+    }
+
+    [Serializable, AgentRes]
+    public class CommandResponse
+    {
+        public bool executed;
+        public string message;
+    }
+
+    #endregion
+    
     /// <summary>
     /// Service for executing player commands (write operations)
     /// Auto-registers itself with OpenClawAPIServer on Awake

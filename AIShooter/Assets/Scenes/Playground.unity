@@ -30944,8 +30944,11 @@ GameObject:
   m_Component:
   - component: {fileID: 1360990005}
   - component: {fileID: 1360990006}
-  - component: {fileID: 1360990008}
   - component: {fileID: 1360990007}
+  - component: {fileID: 1360990010}
+  - component: {fileID: 1360990009}
+  - component: {fileID: 1360990008}
+  - component: {fileID: 1360990011}
   m_Layer: 0
   m_Name: OpenClaw
   m_TagString: Untagged
@@ -30977,9 +30980,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1360990003}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a08147ee77441d498740405779b5d8c, type: 3}
+  m_Script: {fileID: 11500000, guid: e39576c0f3eee9146b9cc0c3d61655ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Port: 8091
+  m_AutoStart: 1
+  m_LogRequests: 1
 --- !u!114 &1360990007
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30989,12 +30995,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1360990003}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8b863f75a9e538468341c064e601155, type: 3}
+  m_Script: {fileID: 11500000, guid: 63adef0d6777b1745b5e4201752486c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  port: 8091
-  enableServer: 1
-  debugLogging: 1
 --- !u!114 &1360990008
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31004,15 +31007,48 @@ MonoBehaviour:
   m_GameObject: {fileID: 1360990003}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e808b1466359de74b808a6ff84cbb2eb, type: 3}
+  m_Script: {fileID: 11500000, guid: 756da5762377c294eb4cd7449733f286, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waypointContainer: {fileID: 288307233}
-  autoFindContainer: 1
-  maxDistance: 50
-  maxResults: 5
-  debugMode: 1
-  mainAPIService: {fileID: 0}
+--- !u!114 &1360990009
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1360990003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff7423ce264ba3343aa0988114838147, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1360990010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1360990003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2156578cfd537548aede2e5ea5715d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1360990011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1360990003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 331f07ebf65bc614a8878d44baa3007b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentTarget: {fileID: 1637166986}
+  taskName: Find the secret treasure
+  completionRange: 2
 --- !u!1 &1361457244
 GameObject:
   m_ObjectHideFlags: 0
@@ -35521,6 +35557,50 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 288307232}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1568094886
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1568094888}
+  - component: {fileID: 1568094887}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &1568094887
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1568094886}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b01d66bd6941c4447920d218c30fbf30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1568094888
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1568094886}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -5.423549, y: 1.7139488, z: -4.638264}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1571222748
 GameObject:
@@ -50536,7 +50616,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 1955887895
+    m_Bits: 4294967295
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -50672,3 +50752,4 @@ SceneRoots:
   - {fileID: 1864911938}
   - {fileID: 288307232}
   - {fileID: 1637166986}
+  - {fileID: 1568094888}

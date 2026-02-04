@@ -9,7 +9,7 @@ namespace CR.OpenClaw
     /// Standard API response wrapper
     /// 标准API响应包装器 - 所有端点使用此格式
     /// </summary>
-    [Serializable]
+    [Serializable, AgentRes]
     public class APIResponse
     {
         public bool success;
@@ -44,7 +44,7 @@ namespace CR.OpenClaw
     /// API error structure
     /// API错误结构
     /// </summary>
-    [Serializable]
+    [Serializable, AgentRes]
     public class APIError
     {
         public string code;
@@ -87,7 +87,7 @@ namespace CR.OpenClaw
     /// <summary>
     /// Health check response - 服务器健康检查
     /// </summary>
-    [Serializable]
+    [Serializable, AgentRes]
     public class HealthResponse
     {
         public string status;
@@ -99,7 +99,7 @@ namespace CR.OpenClaw
     /// <summary>
     /// Game status response - 游戏运行状态
     /// </summary>
-    [Serializable]
+    [Serializable, AgentRes]
     public class GameStatusResponse
     {
         public bool isPlaying;
